@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run script
+        run: |
+          curl -L https://github.com/lune-org/lune/releases/latest/download/lune-linux.zip -o lune.zip
+          unzip lune.zip
+          chmod +x lune
+
+      - name: Run test
+        run: ./lune run test/init.spec.luau
