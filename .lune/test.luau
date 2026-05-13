@@ -1,13 +1,16 @@
 --!strict
-local ServerScriptService = game:GetService("ServerScriptService")
+
 local process = require("@lune/process")
 local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 
+local file = fs.readFile("myPlaceFile.rbxl")
+local game = roblox.deserializePlace(file)
+
 print("Start Test")
 
 -- TestEZ 로드
-local TestEZ = require(game:GetService("ReplicatedStorage").LIB.Packages.testez)
+local TestEZ = require("../module/Packages/testez")
 
 -- 테스트 실행
 local results = TestEZ.TestBootstrap:run({

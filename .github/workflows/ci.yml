@@ -14,7 +14,7 @@ jobs:
 
       - name: Run script
         run: |
-          curl -L https://github.com/lune-org/lune/releases/latest/download/lune-linux.zip -o lune.zip
+          curl -L https://github.com/lune-org/lune/releases/download/v0.10.4/lune-0.10.4-linux-x86_64.zip -o lune.zip
           unzip lune.zip
           chmod +x lune
 
