@@ -16,7 +16,6 @@ jobs:
         run: |
           curl -L https://github.com/lune-org/lune/releases/latest/download/lune-linux.zip -o lune.zip
           unzip lune.zip
-          ls -alH
           chmod +x lune
 
       - name: Run test
