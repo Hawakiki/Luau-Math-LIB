@@ -4,8 +4,6 @@ local process = require("@lune/process")
 local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
 
-local file = fs.readFile("myPlaceFile.rbxl")
-local game = roblox.deserializePlace(file)
 
 print("Start Test")
 
