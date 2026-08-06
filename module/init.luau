@@ -1,165 +1,50 @@
 --!strict
 -- LUAU MATH LIB
 -- CORE Module
-
 -- MADE BY Hawakiki(roblox name: OoPlutoO)
 
-local Math = {}
+local Types = require(script.src.Types)
+local constants = require(script.src.constants)
 
-local ln = math.log
-local sqrt = math.sqrt
-local abs = math.abs
-local acos = math.acos
-local asin = math.asin
-local atan = math.atan
-local atan2 = math.atan2
-local pow = math.pow
-local ceil = math.ceil
-local band = bit32.band
-local lshift = bit32.lshift
-local cos = math.cos
-local cosh = math.cosh
-local exp = math.exp
-local inf = math.huge
-local floor = math.floor
+type MathLibrary = Types.MathLibrary
 
-function Math.abs(n: number): number
-	return abs(n)
-end
+local Math = table.clone(constants) :: MathLibrary
 
-function Math.acos(n: number): number
-	return acos(n)
-end
-
-function Math.acosh(n: number): number
-	return ln(n + sqrt((n ^ 2) - 1))
-end
-
-function Math.asin(n: number): number
-	return asin(n)
-end
-
-function Math.asinh(n: number): number
-	return ln(n + sqrt((n ^ 2) + 1))
-end
-
-function Math.atan(n: number): number
-	return atan(n)
-end
-
-function Math.atan2(y: number, x: number): number
-	return atan2(y, x)
-end
-
-function Math.atanh(n: number): number
-	return ((1 / 2) * ln((1 + n) / (1 - n)))
-end
-
-function Math.cbrt(n: number): number
-	if n < 0 then
-		return -pow(-n, 1 / 3)
-	end
-	return pow(n, 1 / 3)
-end
-
-function Math.ceil(n: number): number
-	return ceil(n)
-end
-
-function Math.clz32(n: number): number
-	n = band(n, 0xFFFFFFFF)
-	if n == 0 then
-		return 32
-	end
-
-	local count = 0
-
-	if band(n, 0xFFFF0000) == 0 then
-		count += 16
-		n = lshift(n, 16)
-	end
-	if band(n, 0xFF000000) == 0 then
-		count += 8
-		n = lshift(n, 8)
-	end
-	if band(n, 0xF0000000) == 0 then
-		count += 4
-		n = lshift(n, 4)
-	end
-	if band(n, 0xC0000000) == 0 then
-		count += 2
-		n = lshift(n, 2)
-	end
-	if band(n, 0x80000000) == 0 then
-		count += 1
-	end
-
-	return count
-end
-
-function Math.cos(n: number): number
-	return cos(n)
-end
-
-function Math.cosh(n: number): number
-	return cosh(n)
-end
-
-function Math.exp(n: number): number
-	return exp(n)
-end
-
-function Math.expm1(n: number): number
-	return (exp(n)) - 1
-end
-
-function Math.f16round(n: number): number
-	local function f16round(x)
-		if x ~= x then
-			return x
-		end
-
-		if x == inf or x == -inf then
-			return x
-		end
-
-		local sign = x < 0 and -1 or 1
-		x = abs(x)
-
-		if x == 0 then
-			return 0
-		end
-
-		local exp = floor(ln(x, 2))
-		local mant = x / (2 ^ exp)
-		if exp > 15 then
-			return sign * inf
-		end
-
-		if exp < -14 then
-			return 0
-		end
-
-		local frac = mant - 1
-		frac = floor(frac * 1024 + 0.5) / 1024
-
-		return sign * (1 + frac) * (2 ^ exp)
-	end
-
-	return f16round(n)
-end
-
-function Math.floor(n: number): number
-    return floor(n)
-end
-
-function Math.fround(n: number): number
-    buffer.writef32(buffer.create(4), 0, n)
-    return buffer.readf32(buffer.create(4), 0)
-end
-
-function Math.hypot(): number
-
-end
+Math.abs = require(script.src.functions.abs)
+Math.acos = require(script.src.functions.acos)
+Math.acosh = require(script.src.functions.acosh)
+Math.asin = require(script.src.functions.asin)
+Math.asinh = require(script.src.functions.asinh)
+Math.atan = require(script.src.functions.atan)
+Math.atan2 = require(script.src.functions.atan2)
+Math.atanh = require(script.src.functions.atanh)
+Math.cbrt = require(script.src.functions.cbrt)
+Math.ceil = require(script.src.functions.ceil)
+Math.clz32 = require(script.src.functions.clz32)
+Math.cos = require(script.src.functions.cos)
+Math.cosh = require(script.src.functions.cosh)
+Math.exp = require(script.src.functions.exp)
+Math.expm1 = require(script.src.functions.expm1)
+Math.f16round = require(script.src.functions.f16round)
+Math.floor = require(script.src.functions.floor)
+Math.fround = require(script.src.functions.fround)
+Math.hypot = require(script.src.functions.hypot)
+Math.imul = require(script.src.functions.imul)
+Math.log = require(script.src.functions.log)
+Math.log10 = require(script.src.functions.log10)
+Math.log1p = require(script.src.functions.log1p)
+Math.log2 = require(script.src.functions.log2)
+Math.max = require(script.src.functions.max)
+Math.min = require(script.src.functions.min)
+Math.pow = require(script.src.functions.pow)
+Math.random = require(script.src.functions.random)
+Math.round = require(script.src.functions.round)
+Math.sign = require(script.src.functions.sign)
+Math.sin = require(script.src.functions.sin)
+Math.sinh = require(script.src.functions.sinh)
+Math.sqrt = require(script.src.functions.sqrt)
+Math.tan = require(script.src.functions.tan)
+Math.tanh = require(script.src.functions.tanh)
+Math.trunc = require(script.src.functions.trunc)
 
 return Math

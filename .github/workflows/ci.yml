@@ -2,21 +2,47 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - main
+      - develop
+      - work
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  validate:
+    name: Validate Luau package
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run script
-        run: |
-          curl -L https://github.com/lune-org/lune/releases/download/v0.10.4/lune-0.10.4-linux-x86_64.zip -o lune.zip
-          unzip lune.zip
-          chmod +x lune
+      - name: Set up Rokit tools
+        uses: CompeyDev/setup-rokit@v0.1.2
+        with:
+          token: ${{ github.token }}
+          cache: true
 
-      - name: Run test
-        run: ./lune run test/init.spec.luau
+      - name: Install Wally packages
+        run: wally install
+
+      - name: Validate repository structure
+        run: python scripts/validate_project.py
+
+      - name: Check formatting
+        run: stylua --check module test
+
+      - name: Lint Luau
+        run: selene module test
+
+      - name: Build Rojo place
+        run: rojo build default.project.json --output build/Luau_MathLIB.rbxlx

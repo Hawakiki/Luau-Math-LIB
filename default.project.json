@@ -2,13 +2,14 @@
   "name": "Luau_MathLIB",
   "tree": {
     "$className": "DataModel",
-
     "ReplicatedStorage": {
       "LIB": {
         "$path": "module"
+      },
+      "Packages": {
+        "$path": "Packages"
       }
     },
-
     "ServerScriptService": {
       "TEST": {
         "$path": "test"

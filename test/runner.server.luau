@@ -1,0 +1,7 @@
+local TestEZ = require(game.ReplicatedStorage.Packages.testez)
+
+local results = TestEZ.TestBootstrap:run({ script.Parent }, TestEZ.Reporters.TextReporter)
+
+if results.failureCount > 0 then
+	error(`{results.failureCount} TestEZ test(s) failed`)
+end
