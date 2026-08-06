@@ -70,4 +70,17 @@ return function()
 			expect(Math.cbrt(n)).to.be.close(math.pow(n, 1 / 3), 1e-6)
 		end)
 	end)
+	describe("Math.hypot", function()
+		it("returns zero with no arguments", function()
+			expect(Math.hypot()).to.equal(0)
+		end)
+
+		it("computes the length of a 2D vector", function()
+			expect(Math.hypot(3, 4)).to.be.close(5, 1e-6)
+		end)
+
+		it("handles multiple dimensions", function()
+			expect(Math.hypot(2, 3, 6)).to.be.close(7, 1e-6)
+		end)
+	end)
 end

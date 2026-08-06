@@ -150,16 +150,45 @@ function Math.f16round(n: number): number
 end
 
 function Math.floor(n: number): number
-    return floor(n)
+	return floor(n)
 end
 
 function Math.fround(n: number): number
-    buffer.writef32(buffer.create(4), 0, n)
-    return buffer.readf32(buffer.create(4), 0)
+	buffer.writef32(buffer.create(4), 0, n)
+	return buffer.readf32(buffer.create(4), 0)
 end
 
-function Math.hypot(): number
+function Math.hypot(...: number): number
+	local max = 0
+	local sum = 0
 
+	for index = 1, select("#", ...) do
+		local value = abs(select(index, ...))
+
+		if value == inf then
+			return inf
+		end
+
+		if value ~= value then
+			return value
+		end
+
+		if value > max then
+			if max > 0 then
+				local ratio = max / value
+				sum = 1 + (sum * ratio * ratio)
+			else
+				sum = 1
+			end
+
+			max = value
+		elseif value > 0 then
+			local ratio = value / max
+			sum += ratio * ratio
+		end
+	end
+
+	return max * sqrt(sum)
 end
 
 return Math
