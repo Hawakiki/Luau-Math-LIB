@@ -14,6 +14,7 @@ TYPES_FILE = ROOT / "module" / "src" / "Types.luau"
 TEST_FILE = ROOT / "test" / "init.spec.luau"
 TEST_RUNNER_FILE = ROOT / "test" / "runner.server.luau"
 PROJECT_FILE = ROOT / "default.project.json"
+DEV_PROJECT_FILE = ROOT / "dev.project.json"
 WALLY_FILE = ROOT / "wally.toml"
 
 EXPECTED_FUNCTIONS = {
@@ -68,13 +69,23 @@ def read(path: Path) -> str:
 
 
 def check_project_mapping() -> None:
+    # default.project.json describes the *module*, not a place. A package manager
+    # reads it to find the module root, so a DataModel here makes the published
+    # package resolve to a folder with no init and break at require time.
     project = json.loads(read(PROJECT_FILE))
-    replicated_storage = project["tree"]["ReplicatedStorage"]
+    if project["tree"].get("$path") != "module":
+        fail("default.project.json must be the library form: tree.$path == module")
+    if "$className" in project["tree"]:
+        fail("default.project.json must not describe a DataModel; use dev.project.json")
+
+    # The place used for Studio and CI lives here instead.
+    dev = json.loads(read(DEV_PROJECT_FILE))
+    replicated_storage = dev["tree"]["ReplicatedStorage"]
     if replicated_storage["LIB"]["$path"] != "module":
         fail("ReplicatedStorage.LIB must point to module")
-    if replicated_storage["Packages"]["$path"] != "Packages":
-        fail("ReplicatedStorage.Packages must point to Wally's Packages folder")
-    if project["tree"]["ServerScriptService"]["TEST"]["$path"] != "test":
+    if replicated_storage["DevPackages"]["$path"] != "DevPackages":
+        fail("ReplicatedStorage.DevPackages must point to Wally's DevPackages folder")
+    if dev["tree"]["ServerScriptService"]["TEST"]["$path"] != "test":
         fail("ServerScriptService.TEST must point to test")
 
 
@@ -106,10 +117,14 @@ def check_tests_and_dependencies() -> None:
     runner = read(TEST_RUNNER_FILE)
     wally = read(WALLY_FILE)
 
-    if "testez = \"roblox/testez@0.4.1\"" not in wally:
+    # TestEZ is only needed to run the tests. Declaring it under [dependencies]
+    # would make every consumer of this library download it too.
+    if "[dev-dependencies]" not in wally:
+        fail("wally.toml must declare TestEZ under [dev-dependencies]")
+    if "roblox/testez@0.4.1" not in wally:
         fail("wally.toml must include the TestEZ dependency")
-    if "Packages.testez" not in runner:
-        fail("test runner must require Wally's TestEZ package")
+    if "DevPackages.testez" not in runner:
+        fail("test runner must require TestEZ from DevPackages")
     if "TestBootstrap:run" not in runner:
         fail("test runner must execute TestEZ")
     if "failureCount" not in runner:

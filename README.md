@@ -17,7 +17,7 @@ Add the package to your `wally.toml` dependencies:
 
 ```toml
 [dependencies]
-LuauMathLib = "anbi/luau-mathlib@0.1.0"
+LuauMathLib = "hawakiki/luau-mathlib@0.1.0"
 ```
 
 Then install packages:
@@ -48,7 +48,7 @@ Or start a live Rojo server:
 rojo serve
 ```
 
-Open the project in Roblox Studio and connect Rojo. The library is mounted at `ReplicatedStorage.LIB` by `default.project.json`.
+Open the project in Roblox Studio and connect Rojo. The library is mounted at `ReplicatedStorage.LIB` by `dev.project.json`.
 
 ## Usage Tutorial
 

@@ -45,4 +45,4 @@ jobs:
         run: selene module test
 
       - name: Build Rojo place
-        run: rojo build default.project.json --output build/Luau_MathLIB.rbxlx
+        run: rojo build dev.project.json --output build/Luau_MathLIB.rbxlx

@@ -1,0 +1,27 @@
+{
+  "name": "@hawakiki/luau-mathlib",
+  "version": "0.1.0",
+  "description": "JavaScript-style Math API for Roblox and Luau",
+  "license": "MIT",
+  "repository": "https://github.com/Hawakiki/Luau-Math-LIB",
+  "realm": "shared",
+  "devDependencies": {
+    "@roblox/testez": "^0.4.1"
+  },
+  "exclude": [
+    "test/**",
+    "scripts/**",
+    "dev.project.json",
+    "selene.toml",
+    "stylua.toml",
+    "rokit.toml",
+    "DevPackages/**",
+    "Packages/**",
+    "build/**",
+    ".github/**",
+    ".vscode/**",
+    ".lune/**",
+    "wally.lock",
+    "rarn.lock"
+  ]
+}
