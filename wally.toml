@@ -1,8 +1,11 @@
 [package]
-name = "anbi/luau-mathlib"
+name = "hawakiki/luau-mathlib"
 version = "0.1.0"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
+license = "MIT"
+description = "JavaScript-style Math API for Roblox and Luau"
+exclude = ["test/**", "scripts/**", "dev.project.json", "selene.toml", "stylua.toml", "rokit.toml", "DevPackages/**", "Packages/**", "build/**", ".github/**", ".vscode/**", ".lune/**", "wally.lock", "rarn.lock"]
 
-[dependencies]
-testez = "roblox/testez@0.4.1"
+[dev-dependencies]
+Testez = "roblox/testez@0.4.1"
