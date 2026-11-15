@@ -15,6 +15,7 @@ INIT_FILE = ROOT / "module" / "init.luau"
 TYPES_FILE = ROOT / "module" / "src" / "Types.luau"
 TEST_FILE = ROOT / "test" / "init.spec.luau"
 TEST_RUNNER_FILE = ROOT / "test" / "runner.server.luau"
+LUNE_RUNNER_FILE = ROOT / ".lune" / "test.luau"
 PROJECT_FILE = ROOT / "default.project.json"
 DEV_PROJECT_FILE = ROOT / "dev.project.json"
 WALLY_FILE = ROOT / "wally.toml"
@@ -117,7 +118,6 @@ def check_function_modules() -> None:
 
 def check_tests_and_dependencies() -> None:
     tests = read(TEST_FILE)
-    runner = read(TEST_RUNNER_FILE)
     wally = tomllib.loads(read(WALLY_FILE))
 
     # TestEZ is only needed to run the tests. Declaring it under [dependencies]
@@ -129,14 +129,17 @@ def check_tests_and_dependencies() -> None:
         fail(f"wally.toml must declare {TESTEZ_SPEC} under [dev-dependencies]")
 
     # Wally names the generated module after the alias key, and Roblox instance
-    # names are case-sensitive, so the runner has to use that exact spelling.
+    # names are case-sensitive, so the runners have to use that exact spelling.
     testez_path = f"DevPackages.{aliases[0]}"
-    if not re.search(rf"{re.escape(testez_path)}\b", runner):
-        fail(f"test runner must require TestEZ as {testez_path} (the wally.toml alias)")
-    if "TestBootstrap:run" not in runner:
-        fail("test runner must execute TestEZ")
-    if "failureCount" not in runner:
-        fail("test runner must fail when TestEZ reports failures")
+    for path in (TEST_RUNNER_FILE, LUNE_RUNNER_FILE):
+        runner = read(path)
+        name = path.relative_to(ROOT)
+        if not re.search(rf"{re.escape(testez_path)}\b", runner):
+            fail(f"{name} must require TestEZ as {testez_path} (the wally.toml alias)")
+        if "TestBootstrap:run" not in runner:
+            fail(f"{name} must execute TestEZ")
+        if "failureCount" not in runner:
+            fail(f"{name} must fail when TestEZ reports failures")
     for expected in ("Math.f16round", "Math.hypot", "Math.imul"):
         if expected not in tests:
             fail(f"test suite should cover {expected}")
