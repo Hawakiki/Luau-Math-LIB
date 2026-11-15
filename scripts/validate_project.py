@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 import sys
+import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 FUNCTIONS_DIR = ROOT / "module" / "src" / "functions"
@@ -16,6 +18,7 @@ TEST_RUNNER_FILE = ROOT / "test" / "runner.server.luau"
 PROJECT_FILE = ROOT / "default.project.json"
 DEV_PROJECT_FILE = ROOT / "dev.project.json"
 WALLY_FILE = ROOT / "wally.toml"
+TESTEZ_SPEC = "roblox/testez@0.4.1"
 
 EXPECTED_FUNCTIONS = {
     "abs",
@@ -115,16 +118,21 @@ def check_function_modules() -> None:
 def check_tests_and_dependencies() -> None:
     tests = read(TEST_FILE)
     runner = read(TEST_RUNNER_FILE)
-    wally = read(WALLY_FILE)
+    wally = tomllib.loads(read(WALLY_FILE))
 
     # TestEZ is only needed to run the tests. Declaring it under [dependencies]
     # would make every consumer of this library download it too.
-    if "[dev-dependencies]" not in wally:
-        fail("wally.toml must declare TestEZ under [dev-dependencies]")
-    if "roblox/testez@0.4.1" not in wally:
-        fail("wally.toml must include the TestEZ dependency")
-    if "DevPackages.testez" not in runner:
-        fail("test runner must require TestEZ from DevPackages")
+    if any(spec.startswith("roblox/testez@") for spec in wally.get("dependencies", {}).values()):
+        fail("wally.toml must not declare TestEZ under [dependencies]; use [dev-dependencies]")
+    aliases = [alias for alias, spec in wally.get("dev-dependencies", {}).items() if spec == TESTEZ_SPEC]
+    if not aliases:
+        fail(f"wally.toml must declare {TESTEZ_SPEC} under [dev-dependencies]")
+
+    # Wally names the generated module after the alias key, and Roblox instance
+    # names are case-sensitive, so the runner has to use that exact spelling.
+    testez_path = f"DevPackages.{aliases[0]}"
+    if not re.search(rf"{re.escape(testez_path)}\b", runner):
+        fail(f"test runner must require TestEZ as {testez_path} (the wally.toml alias)")
     if "TestBootstrap:run" not in runner:
         fail("test runner must execute TestEZ")
     if "failureCount" not in runner:
