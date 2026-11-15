@@ -157,7 +157,16 @@ print(calculate(Math, 10))
 
 ## Running Tests
 
-This project includes TestEZ specs in `test/init.spec.luau`. Run them from Roblox Studio or your preferred Roblox test runner after syncing the project with Rojo.
+This project includes TestEZ specs in `test/init.spec.luau`. CI runs them with Lune against the built place; to run them locally:
+
+```bash
+wally install
+mkdir -p build   # rojo does not create the output folder
+rojo build dev.project.json --output build/Luau_MathLIB.rbxlx
+lune run test build/Luau_MathLIB.rbxlx
+```
+
+In Studio, `ServerScriptService.TEST.runner` runs the same specs when you play.
 
 ## Project Layout
 

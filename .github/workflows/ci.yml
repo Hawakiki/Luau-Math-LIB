@@ -39,10 +39,16 @@ jobs:
         run: python scripts/validate_project.py
 
       - name: Check formatting
-        run: stylua --check module test
+        run: stylua --check module test .lune
 
+      # .lune is a Lune script; selene's Roblox std rejects its string requires.
       - name: Lint Luau
         run: selene module test
 
       - name: Build Rojo place
-        run: rojo build dev.project.json --output build/Luau_MathLIB.rbxlx
+        run: |
+          mkdir -p build
+          rojo build dev.project.json --output build/Luau_MathLIB.rbxlx
+
+      - name: Run TestEZ specs
+        run: lune run test build/Luau_MathLIB.rbxlx

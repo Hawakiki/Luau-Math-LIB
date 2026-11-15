@@ -1,6 +1,6 @@
 roblox.yml
-testez.yml
 wally.lock
-module/Packages
-sourcemap.jsonPackages/
+sourcemap.json
+Packages/
 DevPackages/
+build/
